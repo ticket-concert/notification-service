@@ -1,0 +1,172 @@
+<html>
+  <center style="width:100%;table-layout:fixed;padding-bottom:60px">
+    <table width="100%" style="border-spacing:0px;margin:0px auto;width:100%;max-width:600px;font-family:sans-serif;border-radius:12px;background-color:rgb(255,255,255);color:rgb(73,74,74)">
+      <tbody style="font-family:sans-serif">
+        <tr style="font-family:sans-serif">
+          <td height="8" style="border-top-left-radius:100px;border-top-right-radius:100px;padding:0px;font-family:sans-serif;background-color:rgb(21,41,85)"></td>
+        </tr>
+        <tr style="font-family:sans-serif">
+          <td style="padding:32px 32px 24px;font-size:14px;line-height:20px;letter-spacing:0.003em;font-style:normal;font-weight:400;font-family:sans-serif;color:rgb(21,20,22)">
+            <h2 style="font-size:21px;font-weight:600;font-family:sans-serif">Hore, kamu berhasil dapat tiket!</h2> Halo <b style="font-family:sans-serif">{{.FullName}}</b>, <br> Terima kasih sudah memesan {{.EventName}}. <br>
+            <br>
+            <span style="font-family:sans-serif"> Proses pemesanan dan pembayaran kamu telah kami terima! Tiket untuk event ini sudah kami terbitkan, ya. </span>
+          </td>
+        </tr>
+        <tr style="font-family:sans-serif">
+          <td style="padding:0px 32px 24px;font-family:sans-serif">
+            <table width="100%" style="border-radius:8px;font-weight:400;font-size:14px;letter-spacing:0.003em;border-spacing:0px;font-family:sans-serif;background-color:rgb(245,247,250);color:rgb(73,74,74)">
+              <tbody style="font-family:sans-serif">
+                <tr style="font-family:sans-serif">
+                  <td style="padding:26px 24px;font-family:sans-serif">
+                    <table width="100%" style="border-spacing:0px;font-family:sans-serif">
+                      <tbody style="font-family:sans-serif">
+                        <tr style="font-family:sans-serif">
+                          <td style="padding:10px 0px;font-family:sans-serif">Status Pesanan</td>
+                          <td style="padding:10px 0px;font-family:sans-serif" align="right">
+                            <div style="padding:4px 12px;border-radius:4px;border:1px solid rgb(46,133,68);display:inline;font-size:12px;font-weight:500;font-family:sans-serif;background-color:rgb(231,249,235);color:rgb(46,133,68)">PAID</div>
+                          </td>
+                        </tr>
+                        <tr style="font-family:sans-serif">
+                          <td style="padding:10px 0px;font-family:sans-serif">Nomor Tiket Pesanan</td>
+                          <td style="padding:10px 0px;font-weight:500;font-family:sans-serif;color:black" align="right">
+                            <span style="font-family:sans-serif">{{.TicketNumber}}</span>
+                          </td>
+                        </tr>
+                        <tr style="font-family:sans-serif">
+                          <td style="padding:10px 0px;font-family:sans-serif">Tanggal Pesanan</td>
+                          <td style="padding:10px 0px;font-weight:500;font-family:sans-serif;color:black" align="right">{{.OrderTime}}</td>
+                        </tr>
+                        <tr style="font-family:sans-serif">
+                          <td style="padding:10px 0px;font-family:sans-serif">Metode Pembayaran</td>
+                          <td style="padding:10px 0px;font-weight:500;font-family:sans-serif;color:black" align="right">Virtual Account {{.PaymentType}}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr style="font-family:sans-serif">
+          <td style="padding:0px 32px 24px;font-family:sans-serif">
+            <div style="width:100%;height:1px;font-family:sans-serif;background-color:rgb(219,223,231)"></div>
+          </td>
+        </tr>
+        <tr style="font-family:sans-serif">
+          <td style="padding:0px 32px;font-family:sans-serif">
+            <h1 style="font-size:18px;font-weight:600;letter-spacing:0.001em;font-family:sans-serif">{{.EventName}}</h1>
+          </td>
+        </tr>
+        <tr style="font-family:sans-serif">
+          <td style="padding:0px 32px 24px;font-size:14px;font-style:normal;letter-spacing:0.003em;font-family:sans-serif;color:rgb(73,74,74)">
+            <table width="100%" style="border-spacing:0px;font-family:sans-serif">
+              <tbody style="font-family:sans-serif">
+                <tr style="font-family:sans-serif">
+                  <td width="30%" style="padding:8px 0px;font-family:sans-serif">Jadwal Event</td>
+                  <td width="2%" style="padding:0px;font-family:sans-serif">:</td>
+                  <td width="68%" style="padding:8px 0px;font-family:sans-serif;color:rgb(21,20,22)"> {{.EventTime}}</td>
+                </tr>
+                <tr style="font-family:sans-serif">
+                  <td width="30%" style="padding:8px 0px;font-family:sans-serif">Lokasi Event</td>
+                  <td width="2%" style="padding:0px;font-family:sans-serif">:</td>
+                  <td width="68%" style="padding:8px 0px;font-family:sans-serif;color:rgb(21,20,22)"> {{.EventPlace}} </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr style="font-family:sans-serif">
+          <td style="padding:0px 32px 24px;font-family:sans-serif">
+            <div style="width:100%;height:1px;font-family:sans-serif;background-color:rgb(219,223,231)"></div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <table style="border-spacing:0px;margin-top:36px">
+      <tbody>
+        <tr>
+          <td style="padding:0px 16px 0px 0px">
+            <div style="width:40px;height:40px;border-radius:100%;text-align:center;background-color:rgb(173,182,201)">
+              <a href="https://www.instagram.com/telkomsel" style="line-height:53px" target="_blank">
+                <img src="https://ci3.googleusercontent.com/meips/ADKq_Nad-Ost17v4b8UdoShJla4C967Y50R3DCyiGdkARbjKpJA35pe3Hq3bf4PgO6WbLqToIkHJ-1p7wWqFWOmXNo4w=s0-d-e1-ft#https://assets.loket.com/neo/img/ig-new.png" alt="" width="24px" height="24px" style="border:0px" class="CToWUd" data-bit="iit">
+              </a>
+            </div>
+          </td>
+          <td style="padding:0px 16px 0px 0px">
+            <div style="width:40px;height:40px;border-radius:100%;text-align:center;background-color:rgb(173,182,201)">
+              <a href="https://www.tiktok.com/@telkomsel" style="line-height:53px" target="_blank">
+                <img src="https://ci3.googleusercontent.com/meips/ADKq_NYVIbguyWqzH2nCIxR6uQT1P_KfqH-JilrR_Lu6eILqJ-da5tTbMroXHxMER7xHKUkRpZlDH2WJ47u2tCeUDNSzUzCZYA=s0-d-e1-ft#https://assets.loket.com/neo/img/tiktok-new.png" alt="" width="24px" height="24px" style="border:0px" class="CToWUd" data-bit="iit">
+              </a>
+            </div>
+          </td>
+          <td style="padding:0px 16px 0px 0px">
+            <div style="width:40px;height:40px;border-radius:100%;text-align:center;background-color:rgb(173,182,201)">
+              <a href="https://twitter.com/telkomsel" style="line-height:53px" target="_blank">
+                <img src="https://ci3.googleusercontent.com/meips/ADKq_NZ7j98II91OcaaztryLPYIL-BFoIhInoWeSGiArV5sBW2opuX7WNEXtDYn351O0SowbDvJhjRvN6ADZ2o-_frqnCuyOK-g=s0-d-e1-ft#https://assets.loket.com/neo/img/twitter-new.png" alt="" width="24px" height="24px" style="border:0px" class="CToWUd" data-bit="iit">
+              </a>
+            </div>
+          </td>
+          <td style="padding:0px 16px 0px 0px">
+            <div style="width:40px;height:40px;border-radius:100%;text-align:center;background-color:rgb(173,182,201)">
+              <a href="https://www.facebook.com/telkomsel" style="line-height:53px" target="_blank">
+                <img src="https://ci3.googleusercontent.com/meips/ADKq_Nb17j9qvBuPS1nInU40Uh54rrbRTcGFhJ077jo1AYqNLwuaSrWW0DelPe12OFlAt168OLBocIUcG2zyNcJnFbEcspBN898C=s0-d-e1-ft#https://assets.loket.com/neo/img/facebook-new.png" alt="" width="24px" height="24px" style="border:0px" class="CToWUd" data-bit="iit">
+              </a>
+            </div>
+          </td>
+          <td style="padding:0px 16px 0px 0px">
+            <div style="width:40px;height:40px;border-radius:100%;text-align:center;background-color:rgb(173,182,201)">
+              <a href="https://www.youtube.com/c/telkomsel" style="line-height:53px" target="_blank">
+                <img src="https://ci3.googleusercontent.com/meips/ADKq_NbPltSsHLSx6moTZdMQHDDMH_uXr49xrRLgOkMwa-JnONJITBJ7_eiw84SKx_CU3lNK16Hdq_Lv9_UFHR_X2E-DrYWG-XQ=s0-d-e1-ft#https://assets.loket.com/neo/img/youtube-new.png" alt="" width="24px" height="24px" style="border:0px" class="CToWUd" data-bit="iit">
+              </a>
+            </div>
+          </td>
+          <td style="padding:0px 16px 0px 0px">
+            <div style="width:40px;height:40px;border-radius:100%;text-align:center;background-color:rgb(173,182,201)">
+              <a href="https://www.linkedin.com/company/loket-com" style="line-height:53px" target="_blank">
+                <img src="https://ci3.googleusercontent.com/meips/ADKq_NbLRWPOzYTKBER7xohq_EVE0-u1le3Rnf_T00N32hBK8GlAEw1Fw4XEPQXgnNWbhO22HqBLS91VbFIfS4ucziXfL-eYtP5m=s0-d-e1-ft#https://assets.loket.com/neo/img/linkedin-new.png" alt="" width="24px" height="24px" style="border:0px" class="CToWUd" data-bit="iit">
+              </a>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <table style="border-spacing:0px">
+      <tbody>
+        <tr>
+          <td align="center" style="padding:16px 0px;font-weight:400;font-size:14px;line-height:20px;letter-spacing:0.003em;font-family:sans-serif;color:rgb(73,74,74)"> Jl. Gatot Subroto No.Kav. 52, RT.6/RW.1, Kuningan Bar., Kec. Mampang Prpt., <br> Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12710 </td>
+        </tr>
+        <tr>
+          <td style="font-weight:400;font-size:14px;line-height:20px;letter-spacing:0.003em;font-family:sans-serif;padding:0px;color:rgb(73,74,74)" align="center">
+            <table style="border-spacing:0px;font-family:sans-serif">
+              <tbody style="font-family:sans-serif">
+                <tr style="font-family:sans-serif">
+                  <td style="padding:0px;font-family:sans-serif" valign="middle">
+                    <div style="font-family:sans-serif">
+                      <br>
+                    </div>
+                  </td>
+                </tr>
+                <tr style="font-family:sans-serif">
+                  <td style="padding:0px;font-family:sans-serif" valign="middle">
+                    <div style="font-family:sans-serif">
+                      <img src="https://ci3.googleusercontent.com/meips/ADKq_NaxL09VRaRe6l5oEfuE1ilLG53vNxC_u14OY3W7JJ7DlFdnWwXlOsnRsrWcZkAxq-YZuY52NxlW2MFnR4a0uS_JOA5-=s0-d-e1-ft#https://assets.loket.com/neo/img/inbox-new.png" alt="" width="24px" height="24px" style="border:0px;font-family:sans-serif" class="CToWUd" data-bit="iit">
+                      <span style="margin-left:9px;font-family:sans-serif">
+                        <a href="mailto:support@loket.com" style="font-family:sans-serif" target="_blank">support@soldev.com</a>
+                      </span>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:16px 0px;font-weight:400;font-size:14px;line-height:20px;letter-spacing:0.003em;font-family:sans-serif;color:rgb(73,74,74)" align="center">
+            <a style="text-decoration:none;font-size:14px;font-weight:500;font-family:sans-serif;color:rgb(0,73,204)" target="_blank">Event Creator Center</a> | <a href="https://www.soldev.com/blog" style="text-decoration:none;font-size:14px;font-weight:500;font-family:sans-serif;color:rgb(0,73,204)" target="_blank">Blog</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </center>
+</html>

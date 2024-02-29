@@ -1,0 +1,108 @@
+image: docker.cicd-jfrog.telkomsel.co.id/docker:latest
+services:
+  - name: docker.cicd-jfrog.telkomsel.co.id/docker:18.09.7-dind
+    entrypoint: ["dockerd-entrypoint.sh"]
+    command: ["--insecure-registry", "docker.cicd-jfrog.telkomsel.co.id"]
+    alias: dockerdaemon
+
+variables:
+  GIT_SSL_NO_VERIFY: "1"
+  DOCKER_DRIVER: overlay2
+  DOCKER_HOST: tcp://dockerdaemon:2375
+  SONAR_CERT_URL: https://cicd-jfrog.telkomsel.co.id:443/artifactory/testing/sonar.cer
+  SONAR_URL: https://cicd-codereview.telkomsel.co.id/
+  APP_VERSION: ${CI_PIPELINE_ID}
+  PROJECT_REGISTRY: nomad
+  DOCKER_IMAGE: tms-backend
+  DOCKER_IMAGE_VERSION: ${DOCKER_IMAGE}:${CI_PIPELINE_ID}
+  DOCKER_IMAGE_LATEST: ${DOCKER_IMAGE}:latest
+  SONAR_TOKEN: ${SONAR_TOKEN}
+#testing
+
+before_script:
+  - echo "Before script section"
+  - echo "10.49.65.224	docker.cicd-jfrog.telkomsel.co.id" >> /etc/hosts
+  - cat /etc/hosts
+
+stages:
+  - review
+  - build
+  # - notif
+  # - deploy
+
+.import-curl: &import-curl
+  - wget --no-check-certificate -P /usr/local/bin "https://${JFROG_CREDENTIAL}@${JFROG_ARTIFACTORY}/artifactory/devsecops-blueprint/curl-amd64"
+  - mv /usr/local/bin/curl-amd64 /usr/local/bin/curl
+  - chmod +x /usr/local/bin/curl
+
+.build: &build
+  - echo "${JFROG_PASSWORD}" | docker login docker.cicd-jfrog.telkomsel.co.id -u "${JFROG_USERNAME}" --password-stdin
+  - docker build --build-arg PROXY=https://cicd-jfrog.telkomsel.co.id/artifactory/tsel-go -t docker.cicd-jfrog.telkomsel.co.id/${PROJECT_REGISTRY}/${APP_STATUS}/${DOCKER_IMAGE_VERSION} -f deploy/Dockerfile .
+  - docker push docker.cicd-jfrog.telkomsel.co.id/${PROJECT_REGISTRY}/${APP_STATUS}/${DOCKER_IMAGE_VERSION}
+  - docker tag docker.cicd-jfrog.telkomsel.co.id/${PROJECT_REGISTRY}/${APP_STATUS}/${DOCKER_IMAGE_VERSION} docker.cicd-jfrog.telkomsel.co.id/${PROJECT_REGISTRY}/${APP_STATUS}/${DOCKER_IMAGE_LATEST}
+  - docker push docker.cicd-jfrog.telkomsel.co.id/${PROJECT_REGISTRY}/${APP_STATUS}/${DOCKER_IMAGE_LATEST}
+
+.test: &test
+  - export GOPROXY="https://cicd-jfrog.telkomsel.co.id/artifactory/tsel-go"
+  - make test
+  - make coverage
+
+build:
+  image: docker.cicd-jfrog.telkomsel.co.id/docker
+  stage: build
+  variables:
+    APP_STATUS: ${CI_COMMIT_REF_NAME}
+  script: *build
+  only:
+    - development
+  except:
+    - merge_requests
+
+lint:
+  image: docker.cicd-jfrog.telkomsel.co.id/golangci/golangci-lint
+  stage: review
+  script:
+    - make lint
+  only:
+    - merge_requests
+    - master
+    - development
+
+scan:
+  image: docker.cicd-jfrog.telkomsel.co.id/golang:1.21.3
+  stage: review
+  script:
+    - export GOPROXY="https://cicd-jfrog.telkomsel.co.id/artifactory/tsel-go"
+    - go install github.com/securego/gosec/v2/cmd/gosec@latest
+    - make scan
+  only:
+    - merge_requests
+    - master
+    - development
+
+# unit test
+unit-test:
+  stage: review
+  image: docker.cicd-jfrog.telkomsel.co.id/golang:1.21.3
+  script: *test
+  only:
+    - merge_requests
+    # - /^((?!(master)).)*$/
+    - master
+    - development
+
+
+sonarqube-check:
+  image: docker.cicd-jfrog.telkomsel.co.id/devsecops-blueprint/temp-docker/sonar-scanner-cli:0.2
+  stage: review
+  variables:
+    SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"  # Creates a temporary directory that is not shared with other pipelines
+    GIT_DEPTH: "0"  # Tells Git to fetch all the branches and tags so that SonarQube can analyze them
+  before_script: *import-curl
+  script:
+    # Add sonar cert url, host url and sonar token variables in conumer repo
+    # - echo "downloading unit test report from JFrog"
+    # - curl -sSf  -k  -u "${JFROG_USERNAME}:${JFROG_PASSWORD}" "https://${JFROG_ARTIFACTORY}/${JFROG_REPORTS_PATH}/$TEST_COVERAGE_FILE" --create-dirs -o ${TEST_COVERAGE_FILE}
+    - wget --no-check-certificate ${SONAR_CERT_URL} -O sonar.cer
+    - keytool -importcert -alias sonarssl -keystore '/opt/java/openjdk/lib/security/cacerts' -storepass changeit -file  sonar.cer -noprompt     
+    - sonar-scanner -Dsonar.qualitygate.wait=true ${LANG_PROPERTIES}
