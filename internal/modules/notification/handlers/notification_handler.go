@@ -49,7 +49,7 @@ func (i NotificationEventHandler) SendEmailTicket(message *k.Message, topic stri
 
 	var msg string
 	if err := Unmarshal(message.Value, &msg); err != nil {
-		log.GetLogger().Error(context.Background(), err.Error(), string(message.Value))
+		i.Logger.Error(context.Background(), err.Error(), string(message.Value))
 		return
 	}
 	if err := i.NotificationUsecaseCommand.SendEmailTicket(context.Background(), msg); err != nil {
