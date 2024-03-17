@@ -1,4 +1,4 @@
-# User Service
+# Notification Service
 
 ## Description
 
