@@ -95,9 +95,6 @@ func setConfluentEvents(app *fiber.App, gs *graceful.GracefulShutdown) {
 	// Init redis
 	redisClient := redis.InitConnection(configs.GetConfig().Redis.RedisDB, configs.GetConfig().Redis.RedisHost, configs.GetConfig().Redis.RedisPort,
 		configs.GetConfig().Redis.RedisPassword, configs.GetConfig().Redis.RedisAppConfig)
-	// Init email
-	helperEmail := &helpers.EmailImpl{}
-	helperEmail.Init(configs.GetConfig().Email.EmailUsername, configs.GetConfig().Email.EmailPassword)
 	logger := log.GetLogger()
 	mongoSlaveClient := mongodb.NewMongoDBLogger(mongodb.GetSlaveConn(), mongodb.GetMasterDBName(), logger)
 	kafkaProducer, err := kafkaConfluent.NewProducer(kafkaConfluent.GetConfig().GetKafkaConfig(configs.GetConfig().ServiceName, true), logger)
@@ -112,10 +109,15 @@ func setConfluentEvents(app *fiber.App, gs *graceful.GracefulShutdown) {
 
 	orderQueryMongodbRepo := orderRepoQuery.NewQueryMongodbRepository(mongoSlaveClient, logger)
 
-	mailHelper := helpers.New(configs.GetConfig().Email.SmtpHost, configs.GetConfig().Email.SmtpPort, configs.GetConfig().Email.EmailUsername, configs.GetConfig().Email.EmailPassword)
+	// mailHelper := helpers.New(configs.GetConfig().Email.SmtpHost, configs.GetConfig().Email.SmtpPort, configs.GetConfig().Email.EmailUsername, configs.GetConfig().Email.EmailPassword)
+	mailHelper := &helpers.Mail{
+		Email:    configs.GetConfig().Email.EmailUsername,
+		Password: configs.GetConfig().Email.EmailPassword,
+		SmtpHost: configs.GetConfig().Email.SmtpHost,
+		SmtpPort: configs.GetConfig().Email.SmtpPort,
+	}
 
-	notificationCommandUsecase := notificationUsecases.NewCommandUsecase(logger, helperEmail, *mailHelper, orderQueryMongodbRepo)
+	notificationCommandUsecase := notificationUsecases.NewCommandUsecase(logger, mailHelper, orderQueryMongodbRepo)
 
-	notificationHandler.InitNotificationEventConflHandler(notificationCommandUsecase)
-	notificationHandler.InitNotificationHttpHandler(app, notificationCommandUsecase, logger, redisClient)
+	notificationHandler.InitNotificationEventConflHandler(notificationCommandUsecase, logger)
 }

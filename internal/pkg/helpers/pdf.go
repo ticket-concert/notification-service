@@ -27,12 +27,6 @@ func GeneratePDF(templatePath string, object interface{}) (*[]byte, error) {
 	}
 	body := buf.String()
 
-	// w := time.Now().Unix()
-	// err1 := os.WriteFile("contract/"+strconv.FormatInt(int64(w), 10)+".html", buf.Bytes(), 0644)
-	// if err1 != nil {
-	// 	fmt.Println(err1)
-	// }
-
 	ctx, cancel := chromedp.NewContext(context.Background())
 	defer cancel()
 
@@ -63,4 +57,23 @@ func GeneratePDF(templatePath string, object interface{}) (*[]byte, error) {
 	}
 
 	return &result, nil
+}
+
+func ParseFile(templatePath string, object interface{}) (*string, error) {
+	t, err := template.ParseFiles(templatePath)
+	if err != nil {
+		log.Println("----Error ParseFiles----")
+		log.Println(err)
+		return nil, err
+	}
+
+	buf := new(bytes.Buffer)
+	if err = t.Execute(buf, object); err != nil {
+		log.Println("----Error t.Execute----")
+		log.Println(err)
+		return nil, err
+	}
+
+	res := buf.String()
+	return &res, nil
 }

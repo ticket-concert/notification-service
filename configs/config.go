@@ -98,7 +98,7 @@ type EmailConfig struct {
 	EmailUsername string `envconfig:"email_username"`
 	EmailPassword string `envconfig:"email_password"`
 	SmtpHost      string `envconfig:"smtp_host"`
-	SmtpPort      string `envconfig:"smtp_port"`
+	SmtpPort      int    `envconfig:"smtp_port"`
 }
 
 func InitConfig() *Config {

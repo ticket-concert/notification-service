@@ -10,16 +10,16 @@ import (
 
 // confluent
 
-func InitNotificationEventConflHandler(nc notification.UsecaseCommand) {
+func InitNotificationEventConflHandler(nc notification.UsecaseCommand, log log.Logger) {
 	topicKcr := "concert-send-otp-user-registration"
 	fmt.Println(configs.GetConfig().ServiceName)
-	kcr, _ := kafkaConfluent.NewConsumer(kafkaConfluent.GetConfig().GetKafkaConfig(configs.GetConfig().ServiceName, true), log.GetLogger())
-	kcr.SetHandler(NewInsertNotificationConsumer(nc))
+	kcr, _ := kafkaConfluent.NewConsumer(kafkaConfluent.GetConfig().GetKafkaConfig(configs.GetConfig().ServiceName, true), log)
+	kcr.SetHandler(NewInsertNotificationConsumer(nc, log))
 	kcr.Subscribe(topicKcr)
 
 	topicTicket := "concert-send-email-pdf"
-	kte, _ := kafkaConfluent.NewConsumer(kafkaConfluent.GetConfig().GetKafkaConfig(configs.GetConfig().ServiceName, true), log.GetLogger())
-	kte.SetHandler(NewInsertNotificationConsumer(nc))
+	kte, _ := kafkaConfluent.NewConsumer(kafkaConfluent.GetConfig().GetKafkaConfig(configs.GetConfig().ServiceName, true), log)
+	kte.SetHandler(NewInsertNotificationConsumer(nc, log))
 	kte.Subscribe(topicTicket)
 
 }

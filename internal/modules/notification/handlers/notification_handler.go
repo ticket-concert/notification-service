@@ -13,41 +13,47 @@ import (
 	k "gopkg.in/confluentinc/confluent-kafka-go.v1/kafka"
 )
 
-type insertNotificationHandler struct {
-	notificationUsecaseCommand notification.UsecaseCommand
+var (
+	Unmarshal = json.Unmarshal
+)
+
+type NotificationEventHandler struct {
+	NotificationUsecaseCommand notification.UsecaseCommand
+	Logger                     log.Logger
 }
 
-func NewInsertNotificationConsumer(nc notification.UsecaseCommand) kafkaPkgConfluent.ConsumerHandler {
-	return &insertNotificationHandler{
-		notificationUsecaseCommand: nc,
+func NewInsertNotificationConsumer(nc notification.UsecaseCommand, log log.Logger) kafkaPkgConfluent.ConsumerHandler {
+	return &NotificationEventHandler{
+		NotificationUsecaseCommand: nc,
+		Logger:                     log,
 	}
 }
 
-func (i insertNotificationHandler) SendEmailOtpRegister(message *k.Message, topic string) {
-	log.GetLogger().Info(context.Background(), string(message.Value), fmt.Sprintf("Topic: %v Partition: %v - Offset: %v", *message.TopicPartition.Topic, message.TopicPartition.Partition, message.TopicPartition.Offset.String()))
+func (i NotificationEventHandler) SendEmailOtpRegister(message *k.Message, topic string) {
+	i.Logger.Info(context.Background(), string(message.Value), fmt.Sprintf("Topic: %v Partition: %v - Offset: %v", *message.TopicPartition.Topic, message.TopicPartition.Partition, message.TopicPartition.Offset.String()))
 
 	var msg notificationRequest.SendEmailRegister
 	if err := json.Unmarshal(message.Value, &msg); err != nil {
-		log.GetLogger().Error(context.Background(), err.Error(), string(message.Value))
+		i.Logger.Error(context.Background(), err.Error(), string(message.Value))
 		return
 	}
-	if err := i.notificationUsecaseCommand.SendEmailOtpRegister(context.Background(), msg); err != nil {
-		log.GetLogger().Error(context.Background(), err.Error(), string(message.Value))
+	if err := i.NotificationUsecaseCommand.SendEmailOtpRegister(context.Background(), msg); err != nil {
+		i.Logger.Error(context.Background(), err.Error(), string(message.Value))
 		return
 	}
 	return
 }
 
-func (i insertNotificationHandler) SendEmailTicket(message *k.Message, topic string) {
-	log.GetLogger().Info(context.Background(), string(message.Value), fmt.Sprintf("Topic: %v Partition: %v - Offset: %v", *message.TopicPartition.Topic, message.TopicPartition.Partition, message.TopicPartition.Offset.String()))
+func (i NotificationEventHandler) SendEmailTicket(message *k.Message, topic string) {
+	i.Logger.Info(context.Background(), string(message.Value), fmt.Sprintf("Topic: %v Partition: %v - Offset: %v", *message.TopicPartition.Topic, message.TopicPartition.Partition, message.TopicPartition.Offset.String()))
 
 	var msg string
-	if err := json.Unmarshal(message.Value, &msg); err != nil {
+	if err := Unmarshal(message.Value, &msg); err != nil {
 		log.GetLogger().Error(context.Background(), err.Error(), string(message.Value))
 		return
 	}
-	if err := i.notificationUsecaseCommand.SendEmailTicket(context.Background(), msg); err != nil {
-		log.GetLogger().Error(context.Background(), err.Error(), string(message.Value))
+	if err := i.NotificationUsecaseCommand.SendEmailTicket(context.Background(), msg); err != nil {
+		i.Logger.Error(context.Background(), err.Error(), string(message.Value))
 		return
 	}
 	return
