@@ -28,7 +28,7 @@ type response struct {
 type paginationResponse struct {
 	Meta     MetaResponse       `json:"meta"`
 	Data     interface{}        `json:"data"`
-	MetaData constants.MetaData `json:"meta"`
+	MetaData constants.MetaData `json:"meta_data"`
 }
 
 type Meta struct {
