@@ -51,10 +51,10 @@ func (c *consumer) Subscribe(topics ...string) {
 				continue
 			}
 			switch topics[0] {
-			case "concert-send-otp-user-registration":
+			case "ticket-concert-send-otp-user-registration":
 				go c.handler.SendEmailOtpRegister(msg, topics[0])
 				c.consumer.CommitMessage(msg)
-			case "concert-send-email-pdf":
+			case "ticket-concert-send-email-pdf":
 				go c.handler.SendEmailTicket(msg, topics[0])
 				c.consumer.CommitMessage(msg)
 			default:
