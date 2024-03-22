@@ -2,6 +2,7 @@ package helpers
 
 import (
 	"crypto/rsa"
+	"encoding/base64"
 	"net/http"
 	"strings"
 	"time"
@@ -27,6 +28,12 @@ type ConfigInitializer interface {
 func (j *JwtImpl) InitConfig(privateKeyConf string, publicKeyConf string, privateKeyRefConf string, publicKeyRefConf string) {
 	var err error
 
+	privateKeyByte, err := base64.StdEncoding.DecodeString(privateKeyConf)
+	if err != nil {
+		panic("Error reading private key file")
+	}
+
+	privateKeyConf = string(privateKeyByte)
 	privateKey := strings.ReplaceAll(privateKeyConf, "\\n", "\n")
 	signBytes := []byte(privateKey)
 
@@ -35,6 +42,12 @@ func (j *JwtImpl) InitConfig(privateKeyConf string, publicKeyConf string, privat
 		panic("Private Key cannot Verify")
 	}
 
+	publicKeyByte, err := base64.StdEncoding.DecodeString(publicKeyConf)
+	if err != nil {
+		panic("Error reading public key file")
+	}
+
+	publicKeyConf = string(publicKeyByte)
 	publicKey := strings.ReplaceAll(publicKeyConf, "\\n", "\n")
 	verifyBytes := []byte(publicKey)
 
@@ -44,6 +57,12 @@ func (j *JwtImpl) InitConfig(privateKeyConf string, publicKeyConf string, privat
 	}
 
 	// Sign Refresh Key
+	privateKeyRefByte, err := base64.StdEncoding.DecodeString(privateKeyRefConf)
+	if err != nil {
+		panic("Error reading private key file")
+	}
+
+	privateKeyRefConf = string(privateKeyRefByte)
 	privateKeyRefresh := strings.ReplaceAll(privateKeyRefConf, "\\n", "\n")
 	signBytesRef := []byte(privateKeyRefresh)
 
@@ -52,6 +71,12 @@ func (j *JwtImpl) InitConfig(privateKeyConf string, publicKeyConf string, privat
 		panic("Private Key cannot Verify")
 	}
 
+	publicKeyRefByte, err := base64.StdEncoding.DecodeString(publicKeyRefConf)
+	if err != nil {
+		panic("Error reading private key file")
+	}
+
+	publicKeyRefConf = string(publicKeyRefByte)
 	publicKeyRefresh := strings.ReplaceAll(publicKeyRefConf, "\\n", "\n")
 	verifyBytesRef := []byte(publicKeyRefresh)
 
