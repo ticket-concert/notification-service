@@ -48,7 +48,7 @@ func main() {
 	mongo.InitConnection(configs.GetConfig().MongoDB.MongoMasterDBUrl, configs.GetConfig().MongoDB.MongoSlaveDBUrl)
 
 	// Init Logger
-	logZap := log.SetupLogger()
+	logZap := log.SetupLogger(configs.GetConfig().ServiceName)
 	log.Init(logZap)
 
 	// Init Kafka Config
