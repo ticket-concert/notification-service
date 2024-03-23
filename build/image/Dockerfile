@@ -24,6 +24,7 @@ RUN apt-get update && apt-get install -y wget gnupg ca-certificates \
 WORKDIR /app/cmd
 COPY --from=builder /app/cmd/build/bin/main .
 COPY ./temp/ /app/cmd/temp/
+COPY ./template/ /app/cmd/template/
 
 RUN apt-get install -y tzdata
 
