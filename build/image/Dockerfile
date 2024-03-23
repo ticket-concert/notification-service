@@ -1,30 +1,30 @@
-FROM golang:1.21.3-bullseye
+FROM golang:1.21.3-bullseye as builder
 
-WORKDIR /usr/src/app
-
-COPY . .
+ADD ./ /app
+WORKDIR /app/cmd
 
 RUN apt-get -y update \
     && apt-get -y install netcat \
         build-essential \
         openssl \
-        tzdata git \
-    && make install \
-    && make build
+        tzdata git
 
-RUN apt-get -y install supervisor   
+RUN go mod download
+RUN CGO_ENABLED=1 GOOS=linux go build -o build/bin/main .
 
-ENV TZ=Asia/Jakarta   
+# Run stage
+FROM --platform=linux/amd64 debian:bullseye-slim
+# Install Google Chrome
+RUN apt-get update && apt-get install -y wget gnupg ca-certificates \
+    && wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
+    && echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list \
+    && apt-get update \
+    && apt-get install -y google-chrome-stable
 
-ARG APP_VERSION
-ENV APP_VERSION=$APP_VERSION
+WORKDIR /app/cmd
+COPY --from=builder /app/cmd/build/bin/main .
+COPY ./temp/ /app/cmd/temp/
 
-# Expose port
-EXPOSE 9000
+RUN apt-get install -y tzdata
 
-RUN chmod 775 /usr/src/app/temp
-COPY build/image/supervisord.conf /etc/supervisord.conf
-RUN chmod 775 /etc/supervisord.conf
-RUN touch /usr/src/app/supervisord.log && chmod 775 /usr/src/app/supervisord.log
-
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
+CMD ["/app/cmd/main"]
